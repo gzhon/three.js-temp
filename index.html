@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <script src="https://unpkg.com/three@0.140.2/build/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.137.4/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://unpkg.com/three@0.137.4/examples/js/loaders/TDSLoader.js"></script>
+    <script src="https://unpkg.com/three@0.126.1/examples/jsm/loaders/FBXLoader.js"></script>
+    <script>
+    // ページの読み込みを待つ
+    window.addEventListener('DOMContentLoaded', init);
+
+
+    function init() {
+
+      // サイズを指定
+        const width = innerWidth;
+        const height = innerHeight;
+
+        const canvasElement = document.querySelector('#myCanvas');
+        // レンダラーを作成
+        const renderer = new THREE.WebGLRenderer({
+            canvas: canvasElement
+        });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(width, height);
+
+        // シーンを作成
+        const scene = new THREE.Scene();
+        scene.add(new THREE.AxesHelper(5))
+
+        // カメラを作成
+        const camera = new THREE.PerspectiveCamera(45, width / height,0.1,10000);
+        camera.position.set(0, 0, 1000);
+
+        const controls = new THREE.OrbitControls(camera, canvasElement);
+
+        const directionalLight = new THREE.DirectionalLight(0xffffff);
+        directionalLight.position.set(1, 1, 1);
+        scene.add(directionalLight);
+        // 環境光を追加
+        const ambientLight = new THREE.AmbientLight(0xffffff);
+        scene.add(ambientLight);
+
+        /*
+        //3Dモデル　描画(3ds)
+        const loader_3ds = new THREE.TDSLoader();
+        loader_3ds.setResourcePath('models');
+        loader_3ds.load('models\\isscombined.3ds',  (object) => {
+        // 読み込み後に3D空間に追加
+            iss = object
+            iss.scale.set(100,100,100)
+            iss.rotation.set(0,0,0)
+            iss.position.set(0,0,0)
+            scene.add(iss);
+        });
+        */
+        //3Dモデル　描画(fdx)
+        const loader_fbx = new THREE.FBXLoader();
+        loader_fbx.load('models\\earth.fbx',  (object) => {
+        // 読み込み後に3D空間に追加
+            earth = object
+            earth.scale.set(100,100,100)
+            earth.rotation.set(0,0,0)
+            earth.position.set(0,0,0)
+            scene.add(earth);
+        });
+
+        tick();
+
+        // 毎フレーム時に実行されるループイベントです
+        function tick() {
+            renderer.render(scene, camera); // レンダリング
+            requestAnimationFrame(tick);
+        }
+    }
+    </script>
+</head>
+<body>
+    <canvas id="myCanvas"></canvas>
+</body>
+</html>
